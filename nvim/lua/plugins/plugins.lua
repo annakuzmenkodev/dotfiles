@@ -26,6 +26,8 @@ return {
           c = "anthropic.claude-3-5-sonnet-20241022-v2:0", -- Amazon's Claude model
           s = "claude-3-5-sonnet-latest", -- Anthropic's Claude model
           g = "gemini-exp-1206", -- Google's Gemini model
+          think_g = "gemini-2.0-flash-thinking-exp-01-21",
+          d = "deepseek-reasoner", -- DeepSeek's Reasoner model
         },
         default = "c", -- Default model alias to use
       })

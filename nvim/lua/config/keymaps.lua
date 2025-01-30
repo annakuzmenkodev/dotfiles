@@ -1,6 +1,9 @@
 -- Keymaps are automatically loaded on the VeryLazy event
 -- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
 -- Add any additional keymaps here
+
+-- Unmap LazyVim's default <leader>l binding
+vim.keymap.del("n", "<leader>l")
 vim.keymap.set("i", "kj", "<Esc>", { noremap = true, silent = true, desc = "Exit insert mode" })
 vim.keymap.set("n", "<leader>io", "o<Esc>", { noremap = true, silent = true, desc = "Add empty line" })
 
@@ -98,6 +101,36 @@ vim.keymap.set("i", "<C-l>", "<Plug>(copilot-accept-word)", {
   -- replace_keycodes = false,
   noremap = true,
 })
+require("telescope").setup({
+  defaults = {
+    mappings = {
+      i = {
+        ["<C-a>"] = function(prompt_bufnr)
+          local action_state = require("telescope.actions.state")
 
+          local picker = action_state.get_current_picker(prompt_bufnr)
+          local multi_selections = picker:get_multi_selection()
+
+          if vim.tbl_isempty(multi_selections) then
+            local selected_entry = action_state.get_selected_entry()
+            if selected_entry and selected_entry.path then
+              local filepath = selected_entry.path
+              vim.cmd("Add " .. filepath)
+            else
+              vim.notify("No selection")
+            end
+          else
+            local files = vim.tbl_map(function(s)
+              return s.path
+            end, multi_selections)
+            vim.cmd("Add " .. table.concat(files, " "))
+          end
+
+          return true
+        end,
+      },
+    },
+  },
+})
 -- i18n translation
 vim.keymap.set("n", "gt", ":I18nGoto	<CR>", { noremap = true, desc = "Go to translation or create one" })
