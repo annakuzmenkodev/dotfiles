@@ -2,6 +2,21 @@
 -- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
 -- Add any additional keymaps here
 
+-- Unmap LazyVim's default keymaps
+vim.keymap.del("n", "<leader>bd")
+
+-- Custom buffer delete function
+local function smart_buffer_delete()
+  local buf_count = #vim.fn.getbufinfo({ buflisted = 1 })
+  vim.cmd("bd")
+  if buf_count == 1 then
+    vim.cmd("quit")
+  end
+end
+
+-- Set new buffer delete keymap
+vim.keymap.set("n", "<leader>bd", smart_buffer_delete, { desc = "Delete Buffer & Close Window if Last" })
+
 -- Unmap LazyVim's default <leader>l binding
 vim.keymap.del("n", "<leader>l")
 vim.keymap.set("i", "kj", "<Esc>", { noremap = true, silent = true, desc = "Exit insert mode" })
@@ -60,21 +75,21 @@ vim.api.nvim_set_keymap(
 
 -- Ask LLM about code
 
-vim.keymap.set("n", "<leader>la", ":Ask split %<CR>", { noremap = true, desc = "Ask LLM about current buffer" })
-vim.keymap.set("v", "<leader>la", ":Ask split<CR>", { noremap = true, desc = "Ask LLM about selection" })
+vim.keymap.set("n", "<leader>la", ":Ask vsplit %<CR>", { noremap = true, desc = "Ask LLM about current buffer" })
+vim.keymap.set("v", "<leader>la", ":Ask vsplit<CR>", { noremap = true, desc = "Ask LLM about selection" })
 
 -- Code with LLM
 vim.keymap.set(
   "n",
   "<leader>lc",
-  ":Code split %<CR>",
+  ":Code vsplit %<CR>",
   { noremap = true, desc = "Start coding with LLM on current buffer" }
 )
-vim.keymap.set("v", "<leader>lc", ":Code split<CR>", { noremap = true, desc = "Start coding with LLM on selection" })
+vim.keymap.set("v", "<leader>lc", ":Code vsplit<CR>", { noremap = true, desc = "Start coding with LLM on selection" })
 vim.keymap.set(
   "n",
   "<leader>ld",
-  ":Code split %:h<CR>",
+  ":Code vsplit %:h<CR>",
   { noremap = true, desc = "Start coding with LLM on files in current directory" }
 )
 
@@ -86,11 +101,11 @@ vim.keymap.set("n", "<leader>ad", ":Add<CR>", { noremap = true, desc = "Add cont
 vim.keymap.set("v", "<leader>ad", ":Add<CR>", { noremap = true, desc = "Add selected context to LLM" })
 
 -- Fast coding with Yolo mode
-vim.keymap.set("n", "<leader>ly", ":Yolo split %<CR>", {
+vim.keymap.set("n", "<leader>ly", ":Yolo vsplit %<CR>", {
   noremap = true,
   desc = "Fast coding with LLM on current buffer. Automatically applies changes and closes the chat buffer",
 })
-vim.keymap.set("v", "<leader>ly", ":Yolo split<CR>", {
+vim.keymap.set("v", "<leader>ly", ":Yolo vsplit<CR>", {
   noremap = true,
   desc = "Fast coding with LLM on selection. Automatically applies changes and closes the chat buffer",
 })
